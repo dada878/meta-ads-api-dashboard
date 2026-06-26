@@ -1,15 +1,30 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/meta_report",
-      "destination": "/api"
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
     }
   ],
-  "functions": {
-    "api/**/*.py": {
-      "maxDuration": 60,
-      "excludeFiles": "{tmp/**,output/**,deploy/**,campaigns/**,campaign-sets/**,work/**,__pycache__/**,scripts/__pycache__/**,$CODEX_HOME/**}"
+  "routes": [
+    {
+      "src": "/api/meta_report",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/api",
+      "dest": "/api/index.py"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
-  }
+  ]
 }
