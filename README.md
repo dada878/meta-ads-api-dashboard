@@ -10,7 +10,8 @@
 
 - API-driven 首頁：`index.html`
 - 舊版靜態首頁備份：`campaign-library.html`
-- Vercel API route：`api/meta_report.py`
+- Vercel API entrypoint：`api/index.py`
+- Report handler implementation：`api/meta_report.py`
 - Meta API 匯出：`scripts/fetch_meta_insights.py`
 - 報表規則重建：`scripts/build_meta_report.py`
 - 全流程重建：`scripts/run_meta_api_report.py`

@@ -91,7 +91,7 @@ def get_payload(start: date, end: date, force_refresh: bool) -> dict:
 class handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
-        if parsed.path != "/api/meta_report":
+        if parsed.path not in {"/api", "/api/meta_report"}:
             self._send_json(404, {"error": "Not found"})
             return
 
