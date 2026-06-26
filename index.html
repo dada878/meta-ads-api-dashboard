@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meta Ads API Dashboard</title>
+    <meta
+      name="description"
+      content="直接用 Meta API 拉資料的廣告成效 dashboard，支援指定日期區間、預算建議與年齡／版位／性別 breakdown。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+TC:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #efe8de;
+        --surface: rgba(255, 251, 246, 0.82);
+        --surface-strong: #fffaf3;
+        --ink: #14211c;
+        --muted: #5d6a63;
+        --line: rgba(20, 33, 28, 0.1);
+        --brand: #0f766e;
+        --brand-soft: rgba(15, 118, 110, 0.1);
+        --warn: #b45309;
+        --warn-soft: rgba(251, 191, 36, 0.2);
+        --good: #1f7a45;
+        --good-soft: rgba(34, 197, 94, 0.16);
+        --bad: #b42318;
+        --bad-soft: rgba(239, 68, 68, 0.14);
+        --shadow: 0 30px 80px rgba(34, 24, 14, 0.08);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(15, 118, 110, 0.18), transparent 30%),
+          radial-gradient(circle at top right, rgba(245, 158, 11, 0.18), transparent 26%),
+          linear-gradient(180deg, #f6f1ea 0%, #efe7dc 54%, #ebe1d3 100%);
+        font: 400 16px/1.65 "IBM Plex Sans TC", sans-serif;
+      }
+      button,
+      input {
+        font: inherit;
+      }
+      .shell {
+        width: min(1380px, calc(100% - 28px));
+        margin: 0 auto;
+      }
+      .hero {
+        padding: 28px 0 22px;
+      }
+      .hero-card,
+      .panel,
+      .adset-card,
+      .dimension-table {
+        border: 1px solid var(--line);
+        background: var(--surface);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--shadow);
+      }
+      .hero-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+        gap: 18px;
+        padding: 24px;
+        border-radius: 32px;
+      }
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--brand);
+        font: 700 13px/1 "Space Grotesk", sans-serif;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+      h1 {
+        max-width: 10ch;
+        font: 700 clamp(38px, 8vw, 76px)/0.94 "Space Grotesk", sans-serif;
+        letter-spacing: -0.05em;
+      }
+      .lede {
+        max-width: 58ch;
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 18px;
+      }
+      .meta-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 22px;
+      }
+      .meta-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 36px;
+        padding: 0 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(20, 33, 28, 0.08);
+        background: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+      }
+      .control-card {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+        border-radius: 26px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 248, 240, 0.74)),
+          var(--surface-strong);
+      }
+      .control-card h2 {
+        font: 700 24px/1.1 "Space Grotesk", sans-serif;
+      }
+      .control-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      label span {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      input {
+        width: 100%;
+        min-height: 48px;
+        padding: 0 14px;
+        border: 1px solid rgba(20, 33, 28, 0.12);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.94);
+        color: var(--ink);
+      }
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .button {
+        min-height: 48px;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 16px;
+        background: var(--ink);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .button.secondary {
+        background: rgba(20, 33, 28, 0.08);
+        color: var(--ink);
+      }
+      .button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+      .status {
+        min-height: 24px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .status.error {
+        color: var(--bad);
+      }
+      main {
+        padding: 8px 0 60px;
+      }
+      .summary-grid,
+      .highlight-grid,
+      .adset-grid {
+        display: grid;
+        gap: 16px;
+      }
+      .summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-bottom: 18px;
+      }
+      .highlight-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-bottom: 22px;
+      }
+      .panel {
+        border-radius: 24px;
+        padding: 18px 20px;
+      }
+      .panel small,
+      .highlight-label {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .panel strong {
+        display: block;
+        margin-top: 8px;
+        font: 700 clamp(24px, 4vw, 38px)/1.02 "Space Grotesk", sans-serif;
+        letter-spacing: -0.04em;
+      }
+      .panel em {
+        display: block;
+        margin-top: 10px;
+        color: var(--muted);
+        font-style: normal;
+        font-size: 13px;
+      }
+      .highlight-grid .panel {
+        background: linear-gradient(180deg, rgba(255, 251, 246, 0.96), rgba(249, 241, 232, 0.84));
+      }
+      .highlight-value {
+        margin-top: 10px;
+        font: 700 24px/1.1 "Space Grotesk", sans-serif;
+      }
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin: 12px 0 16px;
+      }
+      .section-head h2 {
+        font: 700 32px/1.02 "Space Grotesk", sans-serif;
+        letter-spacing: -0.04em;
+      }
+      .section-head p {
+        max-width: 56ch;
+        color: var(--muted);
+      }
+      .adset-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .adset-card {
+        border-radius: 28px;
+        padding: 22px;
+      }
+      .adset-top {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .adset-name {
+        font: 700 28px/1.05 "Space Grotesk", sans-serif;
+      }
+      .adset-campaign {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .effect-pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        padding: 0 12px;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+      .effect-good {
+        color: var(--good);
+        background: var(--good-soft);
+      }
+      .effect-normal {
+        color: var(--warn);
+        background: var(--warn-soft);
+      }
+      .effect-bad {
+        color: var(--bad);
+        background: var(--bad-soft);
+      }
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .metric-box {
+        padding: 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(20, 33, 28, 0.06);
+      }
+      .metric-box strong {
+        display: block;
+        margin-top: 8px;
+        font: 700 21px/1.08 "Space Grotesk", sans-serif;
+      }
+      .decision {
+        margin-top: 16px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        background: rgba(15, 118, 110, 0.08);
+      }
+      .decision strong,
+      .dimension-card h3 {
+        font: 700 18px/1.15 "Space Grotesk", sans-serif;
+      }
+      .decision p,
+      .dimension-card p {
+        margin-top: 8px;
+        color: var(--muted);
+      }
+      .dimension-stack {
+        display: grid;
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .dimension-card {
+        padding: 16px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(20, 33, 28, 0.06);
+      }
+      .dimension-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .dimension-meta span {
+        color: var(--brand);
+        font: 700 12px/1 "Space Grotesk", sans-serif;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .dimension-table {
+        overflow: hidden;
+        border-radius: 16px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px 12px;
+        text-align: left;
+        border-bottom: 1px solid rgba(20, 33, 28, 0.08);
+        font-size: 14px;
+      }
+      th {
+        background: rgba(20, 33, 28, 0.04);
+        color: var(--muted);
+        font-weight: 600;
+      }
+      td:last-child,
+      th:last-child {
+        text-align: right;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      .empty-state {
+        padding: 40px 24px;
+        border-radius: 28px;
+        border: 1px dashed rgba(20, 33, 28, 0.18);
+        background: rgba(255, 255, 255, 0.56);
+        color: var(--muted);
+        text-align: center;
+      }
+      @media (max-width: 1100px) {
+        .hero-card,
+        .summary-grid,
+        .highlight-grid,
+        .adset-grid,
+        .metric-row {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 720px) {
+        .hero-card,
+        .panel,
+        .adset-card {
+          border-radius: 24px;
+        }
+        .hero-card {
+          padding: 18px;
+        }
+        h1 {
+          max-width: none;
+          font-size: 42px;
+        }
+        .control-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <section class="hero">
+        <div class="hero-card">
+          <div>
+            <p class="eyebrow">Meta Marketing API</p>
+            <h1>廣告成效儀表板</h1>
+            <p class="lede">
+              這版 dashboard 不再依賴瀏覽器匯出。每次查詢都直接走 Meta API，回傳 ad set、年齡、版位、性別四種 breakdown，並套上固定規則與建議文案。
+            </p>
+            <div class="meta-strip" id="heroMeta"></div>
+          </div>
+          <aside class="control-card">
+            <div>
+              <p class="eyebrow">Query Range</p>
+              <h2>指定報表區間</h2>
+            </div>
+            <div class="control-grid">
+              <label>
+                <span>開始日期</span>
+                <input id="startDate" type="date" />
+              </label>
+              <label>
+                <span>結束日期</span>
+                <input id="endDate" type="date" />
+              </label>
+            </div>
+            <div class="actions">
+              <button class="button" id="loadButton">重新抓取 API</button>
+              <button class="button secondary" id="latestButton">最近 7 天</button>
+            </div>
+            <div class="status" id="statusText">等待查詢</div>
+          </aside>
+        </div>
+      </section>
+
+      <main>
+        <section class="summary-grid" id="summaryGrid"></section>
+        <section class="highlight-grid" id="highlightGrid"></section>
+
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Ad Set Breakdown</p>
+            <h2>預算與受眾判讀</h2>
+          </div>
+          <p>
+            每張卡片都包含目前預算、調整後預算、ROAS / CPA 指標，以及年齡、版位、性別三層 breakdown 建議。
+          </p>
+        </div>
+        <section class="adset-grid" id="adsetGrid"></section>
+      </main>
+    </div>
+
+    <script>
+      const startInput = document.getElementById("startDate");
+      const endInput = document.getElementById("endDate");
+      const loadButton = document.getElementById("loadButton");
+      const latestButton = document.getElementById("latestButton");
+      const statusText = document.getElementById("statusText");
+      const heroMeta = document.getElementById("heroMeta");
+      const summaryGrid = document.getElementById("summaryGrid");
+      const highlightGrid = document.getElementById("highlightGrid");
+      const adsetGrid = document.getElementById("adsetGrid");
+
+      const twd = new Intl.NumberFormat("zh-TW", { style: "currency", currency: "TWD", maximumFractionDigits: 0 });
+      const number = new Intl.NumberFormat("zh-TW");
+      const oneDecimal = new Intl.NumberFormat("zh-TW", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+      const twoDecimal = new Intl.NumberFormat("zh-TW", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      function isoDate(date) {
+        return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      }
+
+      function setLatestRange() {
+        const end = new Date();
+        const start = new Date(end);
+        start.setDate(end.getDate() - 6);
+        startInput.value = isoDate(start);
+        endInput.value = isoDate(end);
+      }
+
+      function effectClass(effect) {
+        if (effect === "不錯") return "effect-good";
+        if (effect === "較差") return "effect-bad";
+        return "effect-normal";
+      }
+
+      function fmtPct(value) {
+        const sign = value > 0 ? "+" : "";
+        return `${sign}${oneDecimal.format(value)}%`;
+      }
+
+      function setLoading(isLoading, message) {
+        loadButton.disabled = isLoading;
+        latestButton.disabled = isLoading;
+        statusText.textContent = message;
+        statusText.className = "status";
+      }
+
+      function setError(message) {
+        statusText.textContent = message;
+        statusText.className = "status error";
+      }
+
+      function renderMeta(period, summary) {
+        heroMeta.innerHTML = `
+          <span class="meta-chip">${period.tab}</span>
+          <span class="meta-chip">ROAS ${twoDecimal.format(summary.overall_roas || 0)}</span>
+          <span class="meta-chip">購買 ${number.format(summary.purchases || 0)}</span>
+          <span class="meta-chip">更新時間 ${period.generated_at}</span>
+        `;
+      }
+
+      function renderSummary(summary) {
+        const items = [
+          ["總花費", twd.format(summary.total_spend || 0), `目前日預算 ${twd.format(summary.current_budget || 0)}`],
+          ["推估營收", twd.format(summary.total_revenue || 0), `預估淨利 ${twd.format(summary.estimated_profit || 0)}`],
+          ["整體 ROAS", twoDecimal.format(summary.overall_roas || 0), `成果 ${number.format(summary.results || 0)}`],
+          ["調整後日預算", twd.format(summary.adjusted_budget || 0), `變動 ${fmtPct(summary.budget_change_pct || 0)}`],
+        ];
+        summaryGrid.innerHTML = items
+          .map(
+            ([label, value, note]) => `
+              <article class="panel">
+                <small>${label}</small>
+                <strong>${value}</strong>
+                <em>${note}</em>
+              </article>
+            `
+          )
+          .join("");
+      }
+
+      function renderHighlights(highlights) {
+        const items = [
+          ["最高 ROAS", highlights.best_roas],
+          ["最低 CPA", highlights.lowest_cpa],
+          ["最大降預算", highlights.biggest_cut],
+          ["最大加預算", highlights.biggest_raise],
+        ];
+        highlightGrid.innerHTML = items
+          .map(
+            ([label, value]) => `
+              <article class="panel">
+                <span class="highlight-label">${label}</span>
+                <div class="highlight-value">${value || "-"}</div>
+              </article>
+            `
+          )
+          .join("");
+      }
+
+      function renderDimensions(dimensions) {
+        return dimensions
+          .map((dimension) => {
+            const rows = dimension.segments
+              .map(
+                (segment) => `
+                  <tr>
+                    <td>${segment.label}</td>
+                    <td>${number.format(segment.results || 0)}</td>
+                    <td>${twd.format(segment.cpa || 0)}</td>
+                    <td>${twd.format(segment.spend || 0)}</td>
+                    <td>${number.format(segment.purchases || 0)}</td>
+                    <td>${twoDecimal.format(segment.roas || 0)}</td>
+                  </tr>
+                `
+              )
+              .join("");
+            return `
+              <section class="dimension-card">
+                <div class="dimension-meta">
+                  <div>
+                    <span>${dimension.title}</span>
+                    <h3>${dimension.name}</h3>
+                  </div>
+                  <div class="effect-pill ${effectClass(dimension.fixed.includes("持平") ? "普通" : "不錯")}">${dimension.fixed}</div>
+                </div>
+                <p>${dimension.advice}</p>
+                <div class="dimension-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>項目</th>
+                        <th>成果</th>
+                        <th>CPA</th>
+                        <th>花費</th>
+                        <th>購買</th>
+                        <th>ROAS</th>
+                      </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                  </table>
+                </div>
+              </section>
+            `;
+          })
+          .join("");
+      }
+
+      function renderAdsets(adsets) {
+        if (!adsets.length) {
+          adsetGrid.innerHTML = `<div class="empty-state">這個日期區間沒有可顯示的 ad set 資料。</div>`;
+          return;
+        }
+
+        adsetGrid.innerHTML = adsets
+          .map(
+            (adset) => `
+              <article class="adset-card">
+                <div class="adset-top">
+                  <div>
+                    <div class="adset-name">${adset.name}</div>
+                    <div class="adset-campaign">${adset.campaign}</div>
+                  </div>
+                  <div class="effect-pill ${effectClass(adset.effect)}">${adset.effect}</div>
+                </div>
+
+                <div class="metric-row">
+                  <div class="metric-box"><small>目前預算</small><strong>${twd.format(adset.budget || 0)}</strong></div>
+                  <div class="metric-box"><small>調整後預算</small><strong>${twd.format(adset.adjusted_budget || 0)}</strong></div>
+                  <div class="metric-box"><small>成果 / 購買</small><strong>${number.format(adset.results || 0)} / ${number.format(adset.purchases || 0)}</strong></div>
+                  <div class="metric-box"><small>CPA</small><strong>${twd.format(adset.cpa || 0)}</strong></div>
+                  <div class="metric-box"><small>ROAS</small><strong>${twoDecimal.format(adset.roas || 0)}</strong></div>
+                </div>
+
+                <div class="decision">
+                  <strong>${adset.rule}</strong>
+                  <p>${adset.budget_advice}</p>
+                </div>
+
+                <div class="dimension-stack">${renderDimensions(adset.dimensions)}</div>
+              </article>
+            `
+          )
+          .join("");
+      }
+
+      async function loadReport() {
+        const start = startInput.value;
+        const end = endInput.value;
+        if (!start || !end) {
+          setError("請先選開始與結束日期");
+          return;
+        }
+
+        setLoading(true, "正在用 Meta API 重建報表...");
+        summaryGrid.innerHTML = "";
+        highlightGrid.innerHTML = "";
+        adsetGrid.innerHTML = `<div class="empty-state">資料讀取中...</div>`;
+
+        try {
+          const url = new URL("/api/meta_report", window.location.origin);
+          url.searchParams.set("start", start);
+          url.searchParams.set("end", end);
+          url.searchParams.set("refresh", "1");
+
+          const response = await fetch(url);
+          const payload = await response.json();
+          if (!response.ok) {
+            throw new Error(payload.details || payload.error || "API request failed");
+          }
+
+          renderMeta(payload.period, payload.summary);
+          renderSummary(payload.summary);
+          renderHighlights(payload.highlights);
+          renderAdsets(payload.adsets || []);
+          setLoading(false, `完成：${payload.period.tab}，更新於 ${payload.period.generated_at}`);
+        } catch (error) {
+          setError(`讀取失敗：${error.message}`);
+          adsetGrid.innerHTML = `<div class="empty-state">API 目前無法回傳資料，請稍後再試。</div>`;
+        }
+      }
+
+      loadButton.addEventListener("click", loadReport);
+      latestButton.addEventListener("click", () => {
+        setLatestRange();
+        loadReport();
+      });
+
+      setLatestRange();
+      loadReport();
+    </script>
+  </body>
+</html>

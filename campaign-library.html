@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>100 組完整行銷素材庫 | Vibe Coding 工作術</title>
+    <style>
+      :root {
+        --bg: #f7f6f1;
+        --paper: #ffffff;
+        --ink: #171717;
+        --muted: #66645f;
+        --line: #ded9cf;
+        --green: #0d8065;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Segoe UI", sans-serif;
+        line-height: 1.65;
+      }
+      a { color: inherit; }
+      .wrap { width: min(1280px, calc(100% - 40px)); margin: 0 auto; }
+      header {
+        padding: 54px 0 34px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, #fffdf7, var(--bg));
+      }
+      .eyebrow { margin: 0 0 10px; color: var(--green); font-size: 14px; font-weight: 900; }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 {
+        max-width: 980px;
+        margin-bottom: 14px;
+        font-size: clamp(38px, 6vw, 72px);
+        line-height: 1.04;
+        letter-spacing: 0;
+      }
+      .lead { max-width: 920px; color: #3d3b37; font-size: 19px; }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--paper);
+        padding: 16px;
+      }
+      .stat strong { display: block; font-size: 30px; line-height: 1; }
+      .stat span { color: var(--muted); font-size: 13px; }
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid var(--line);
+        background: rgba(247, 246, 241, 0.9);
+        backdrop-filter: blur(14px);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 64px;
+        gap: 18px;
+      }
+      .brand { font-weight: 950; }
+      .nav-links { display: flex; flex-wrap: wrap; gap: 16px; color: var(--muted); font-size: 14px; }
+      section { padding: 48px 0; }
+      h2 { margin-bottom: 8px; font-size: clamp(28px, 4vw, 44px); line-height: 1.14; }
+      .section-copy { margin-bottom: 22px; color: var(--muted); }
+      .archive {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+      .archive a {
+        display: block;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--paper);
+        padding: 16px;
+        text-decoration: none;
+        font-weight: 850;
+      }
+      .sets {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+      .set-card {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--paper);
+        overflow: hidden;
+      }
+      .set-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        object-fit: cover;
+        border-bottom: 1px solid var(--line);
+        background: #eee;
+      }
+      .set-body { padding: 18px; }
+      .meta { color: var(--green); font-size: 13px; font-weight: 900; }
+      .set-card h3 { margin: 6px 0 8px; font-size: 23px; line-height: 1.18; }
+      .set-card p { color: var(--muted); }
+      .link-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        padding: 0 11px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fbfaf6;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .notice {
+        border: 1px solid var(--line);
+        border-left: 5px solid var(--green);
+        border-radius: 8px;
+        background: var(--paper);
+        padding: 18px;
+        color: var(--muted);
+      }
+      footer { padding: 34px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+      @media (max-width: 1000px) {
+        .stats, .archive, .sets { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 700px) {
+        .stats, .archive, .sets { grid-template-columns: 1fr; }
+        .nav-inner { align-items: start; flex-direction: column; padding: 12px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <p class="eyebrow">300 萬小課程計畫素材庫</p>
+        <h1>100 組完整行銷素材，一組一組生成。</h1>
+        <p class="lead">
+          每一組都會有自己的 Landing Page、銷售文案、影片腳本、廣告文案與獨立 PNG 廣告圖片。不要 SVG，不用佔位圖。完成一組，就加入這個首頁。
+        </p>
+        <div class="stats">
+          <div class="stat"><strong>6</strong><span>已完成完整 Set</span></div>
+          <div class="stat"><strong>100</strong><span>目標完整 Sets</span></div>
+          <div class="stat"><strong>PNG</strong><span>廣告圖格式</span></div>
+          <div class="stat"><strong>逐組</strong><span>人工生成與整理</span></div>
+        </div>
+      </div>
+    </header>
+
+    <nav>
+      <div class="wrap nav-inner">
+        <div class="brand">Vibe Coding Campaign Library</div>
+        <div class="nav-links">
+          <a href="#sets">完整 Sets</a>
+          <a href="#archive">既有 4 批</a>
+          <a href="#rules">規則</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section id="sets">
+        <div class="wrap">
+          <h2>完整 Sets</h2>
+          <p class="section-copy">目前已完成第 001-006 組。後續會從 007 開始繼續一組一組生成並加入這裡。</p>
+          <div class="sets">
+            <article class="set-card">
+              <a href="campaign-sets/set-001-less-work/index.html">
+                <img src="campaign-sets/set-001-less-work/assets/ad-image.png" alt="Campaign 001 學會把事情變少廣告圖" />
+              </a>
+              <div class="set-body">
+                <div class="meta">Set 001｜上班族 / 營運 / 行政｜時間型痛點</div>
+                <h3>學會把事情變少</h3>
+                <p>主打重複工作不是要做快一點，而是要交給系統。適合投放給每天整理表格、回訊息、寄通知、做報表的受眾。</p>
+                <div class="link-row">
+                  <a class="pill" href="campaign-sets/set-001-less-work/index.html">Landing Page</a>
+                  <a class="pill" href="campaign-sets/set-001-less-work/copy.md">文案</a>
+                  <a class="pill" href="campaign-sets/set-001-less-work/video-script.md">影片腳本</a>
+                  <a class="pill" href="campaign-sets/set-001-less-work/ads.md">廣告文案</a>
+                  <a class="pill" href="campaign-sets/set-001-less-work/assets/ad-image.png">PNG 圖片</a>
+                </div>
+              </div>
+            </article>
+            <article class="set-card">
+              <a href="campaign-sets/set-002-own-dashboard/index.html">
+                <img src="campaign-sets/set-002-own-dashboard/assets/ad-image.png" alt="Campaign 002 一人公司也要有後台廣告圖" />
+              </a>
+              <div class="set-body">
+                <div class="meta">Set 002｜小老闆 / 顧問 / 個人品牌｜後台管理</div>
+                <h3>一人公司，也要有後台</h3>
+                <p>主打客戶資料、付款狀態、預約與跟進不該散在 LINE、表單和 Excel，適合投放給個人品牌與小型服務業者。</p>
+                <div class="link-row">
+                  <a class="pill" href="campaign-sets/set-002-own-dashboard/index.html">Landing Page</a>
+                  <a class="pill" href="campaign-sets/set-002-own-dashboard/copy.md">文案</a>
+                  <a class="pill" href="campaign-sets/set-002-own-dashboard/video-script.md">影片腳本</a>
+                  <a class="pill" href="campaign-sets/set-002-own-dashboard/ads.md">廣告文案</a>
+                  <a class="pill" href="campaign-sets/set-002-own-dashboard/assets/ad-image.png">PNG 圖片</a>
+                </div>
+              </div>
+            </article>
+            <article class="set-card">
+              <a href="campaign-sets/set-003-sell-workflows/index.html">
+                <img src="campaign-sets/set-003-sell-workflows/assets/ad-image.png" alt="Campaign 003 不要只賣網站廣告圖" />
+              </a>
+              <div class="set-body">
+                <div class="meta">Set 003｜接案者 / 設計師 / 行銷顧問｜流程方案</div>
+                <h3>不要只賣網站</h3>
+                <p>主打從一頁網站接案升級成名單入口、自動跟進、客戶後台與數據流程，適合投放給接案服務者。</p>
+                <div class="link-row">
+                  <a class="pill" href="campaign-sets/set-003-sell-workflows/index.html">Landing Page</a>
+                  <a class="pill" href="campaign-sets/set-003-sell-workflows/copy.md">文案</a>
+                  <a class="pill" href="campaign-sets/set-003-sell-workflows/video-script.md">影片腳本</a>
+                  <a class="pill" href="campaign-sets/set-003-sell-workflows/ads.md">廣告文案</a>
+                  <a class="pill" href="campaign-sets/set-003-sell-workflows/assets/ad-image.png">PNG 圖片</a>
+                </div>
+              </div>
+            </article>
+            <article class="set-card">
+              <a href="campaign-sets/set-004-tool-fatigue/index.html">
+                <img src="campaign-sets/set-004-tool-fatigue/assets/ad-image.png" alt="Campaign 004 工具會換流程能力不會過期廣告圖" />
+              </a>
+              <div class="set-body">
+                <div class="meta">Set 004｜AI 學習者 / 工具疲勞｜流程能力</div>
+                <h3>工具會換，流程能力不會過期</h3>
+                <p>主打停止追工具焦慮，學會拆需求、寫 PRD、指揮 AI、驗收系統這套可複用能力。</p>
+                <div class="link-row">
+                  <a class="pill" href="campaign-sets/set-004-tool-fatigue/index.html">Landing Page</a>
+                  <a class="pill" href="campaign-sets/set-004-tool-fatigue/copy.md">文案</a>
+                  <a class="pill" href="campaign-sets/set-004-tool-fatigue/video-script.md">影片腳本</a>
+                  <a class="pill" href="campaign-sets/set-004-tool-fatigue/ads.md">廣告文案</a>
+                  <a class="pill" href="campaign-sets/set-004-tool-fatigue/assets/ad-image.png">PNG 圖片</a>
+                </div>
+              </div>
+            </article>
+            <article class="set-card">
+              <a href="campaign-sets/set-005-prototype-first/index.html">
+                <img src="campaign-sets/set-005-prototype-first/assets/ad-image.png" alt="Campaign 005 先做原型廣告圖" />
+              </a>
+              <div class="set-body">
+                <div class="meta">Set 005｜主管 / 小團隊 / 創業者｜低風險原型</div>
+                <h3>先做原型，再決定開發</h3>
+                <p>主打不要一開始就外包，先用 AI 做出流程原型，讓需求清楚後再決定正式開發。</p>
+                <div class="link-row">
+                  <a class="pill" href="campaign-sets/set-005-prototype-first/index.html">Landing Page</a>
+                  <a class="pill" href="campaign-sets/set-005-prototype-first/copy.md">文案</a>
+                  <a class="pill" href="campaign-sets/set-005-prototype-first/video-script.md">影片腳本</a>
+                  <a class="pill" href="campaign-sets/set-005-prototype-first/ads.md">廣告文案</a>
+                  <a class="pill" href="campaign-sets/set-005-prototype-first/assets/ad-image.png">PNG 圖片</a>
+                </div>
+              </div>
+            </article>
+            <article class="set-card">
+              <a href="campaign-sets/set-006-line-sales/index.html">
+                <img src="campaign-sets/set-006-line-sales/assets/ad-image.png" alt="Campaign 006 LINE 不只是聊天廣告圖" />
+              </a>
+              <div class="set-body">
+                <div class="meta">Set 006｜店家 / 顧問 / LINE 官方帳號｜私域銷售</div>
+                <h3>LINE 不只是聊天</h3>
+                <p>主打把 LINE 官方帳號設計成可預約、看方案、客服與後續跟進的自動銷售入口。</p>
+                <div class="link-row">
+                  <a class="pill" href="campaign-sets/set-006-line-sales/index.html">Landing Page</a>
+                  <a class="pill" href="campaign-sets/set-006-line-sales/copy.md">文案</a>
+                  <a class="pill" href="campaign-sets/set-006-line-sales/video-script.md">影片腳本</a>
+                  <a class="pill" href="campaign-sets/set-006-line-sales/ads.md">廣告文案</a>
+                  <a class="pill" href="campaign-sets/set-006-line-sales/assets/ad-image.png">PNG 圖片</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="archive">
+        <div class="wrap">
+          <h2>既有 4 批素材</h2>
+          <p class="section-copy">這些是前面已做好的探索批次，保留作為靈感庫；新的 100 組會放在上面的完整 Sets。</p>
+          <div class="archive">
+            <a href="campaigns/batch-001-system-builder/index.html">Batch 001｜AI 系統化工作台</a>
+            <a href="campaigns/batch-002-freelancer-offer/index.html">Batch 002｜接案服務升級</a>
+            <a href="campaigns/batch-003-team-enablement/index.html">Batch 003｜團隊導入內訓</a>
+            <a href="campaigns/batch-004-ai-operator-career/index.html">Batch 004｜AI Operator 職涯</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="rules">
+        <div class="wrap">
+          <h2>後續生成規則</h2>
+          <div class="notice">
+            每組都必須包含：獨立資料夾、Landing Page、銷售文案、影片腳本、廣告文案、PNG 廣告圖片。廣告圖維持簡化：一張圖只打一個訊息、少字、留白、不要塞滿流程或模塊。
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer><div class="wrap">Vibe Coding 工作術 100 組完整行銷素材庫</div></footer>
+  </body>
+</html>
