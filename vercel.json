@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "api/*.py": {
+    "api/**/*.py": {
       "maxDuration": 60,
       "excludeFiles": "{tmp/**,output/**,deploy/**,campaigns/**,campaign-sets/**,work/**,__pycache__/**,scripts/__pycache__/**,$CODEX_HOME/**}"
     }
